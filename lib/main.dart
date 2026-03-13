@@ -1,3 +1,4 @@
+import 'package:adynee_web/responsive/screen_size.dart';
 import 'package:adynee_web/screens/main_page.dart';
 import 'package:adynee_web/screens/save_details_screen.dart';
 import 'package:adynee_web/screens/show_video_screen.dart';
@@ -15,6 +16,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSize.init(context);
+
     return MaterialApp.router(
       title: 'Adynee',
       debugShowCheckedModeBanner: false,
@@ -22,20 +25,6 @@ class MyApp extends StatelessWidget {
         fontFamily: "Poppins",
       ),
       routerConfig: _router,
-
-
-      builder: (context, child) => ResponsiveBreakpoints.builder(
-        child: ResponsiveScaledBox(
-          width: 1200,
-          child: child!,
-        ),
-        breakpoints: [
-          const Breakpoint(start: 0, end: 450, name: MOBILE),
-          const Breakpoint(start: 451, end: 800, name: TABLET),
-          const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-          const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-        ],
-      ),
 
     );
   }

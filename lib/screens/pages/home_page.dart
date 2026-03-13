@@ -8,13 +8,12 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: AppColors.home_bg_color,
       body: Column(
-        children: const [
-
-       //   Navbar(),
-
+        children: [
           Expanded(
             child: HeroSection(),
           ),

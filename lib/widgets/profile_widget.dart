@@ -1,4 +1,7 @@
+import 'package:adynee_web/responsive/screen_size.dart';
 import 'package:flutter/material.dart';
+
+import '../responsive/responsive.dart';
 
 class ProfileWidget extends StatelessWidget {
   const ProfileWidget({super.key});
@@ -10,8 +13,8 @@ class ProfileWidget extends StatelessWidget {
       children: [
 
         Container(
-          width: 300,
-          height: 300,
+          width: Responsive.isMobile(context) ? ScreenSize.width*0.35 : ScreenSize.width*0.25,
+          height: Responsive.isMobile(context) ? ScreenSize.width*0.35 : ScreenSize.width*0.25,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
@@ -26,6 +29,7 @@ class ProfileWidget extends StatelessWidget {
         const Text(
           "Thats me ssss!!",
           style: TextStyle(
+
             color: Colors.white70,
             fontStyle: FontStyle.italic,
           ),

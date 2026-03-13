@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../responsive/responsive.dart';
 import 'cta_button.dart';
 import 'profile_widget.dart';
 
@@ -7,9 +8,15 @@ class HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = Responsive.isMobile(context);
+
+
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 100),
-      child: Row(
+      child: isMobile
+        ? _mobileLayout()
+        : _desktopLayout(),/*Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: const [
 
@@ -17,9 +24,38 @@ class HeroSection extends StatelessWidget {
 
           ProfileWidget()
         ],
-      ),
+      ),*/
     );
   }
+}
+
+/// DESKTOP
+Widget _desktopLayout() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+
+      HeroText(),
+
+      ProfileWidget()
+    ],
+  );
+}
+
+/// MOBILE
+Widget _mobileLayout() {
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+
+        HeroText(),
+
+        const SizedBox(height: 30),
+
+        ProfileWidget(),
+      ],
+    ),
+  );
 }
 
 class HeroText extends StatelessWidget {
@@ -30,12 +66,16 @@ class HeroText extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
+
+         SizedBox(height: Responsive.isMobile(context) ? 40 : 0,),
 
         Text(
           "Your inner confidence\nneeds space to grow",
           style: TextStyle(
-            fontSize: 44,
+            fontSize: Responsive.isMobile(context)
+                ? 30
+                : 44,
             fontWeight: FontWeight.bold,
             color: Color(0xFF57C7C2),
           ),
@@ -46,7 +86,9 @@ class HeroText extends StatelessWidget {
         Text(
           "and training to thrive.",
           style: TextStyle(
-            fontSize: 44,
+            fontSize: Responsive.isMobile(context)
+                ? 30
+                : 44,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
