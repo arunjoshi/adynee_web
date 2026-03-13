@@ -41,6 +41,8 @@ dependencies:
   fluttertoast: ^8.0.7
   go_router: ^14.0.1
   youtube_player_iframe: ^5.1.0
+  responsive_framework: ^1.5.1
+
 
 dev_dependencies:
   flutter_test:

@@ -45,6 +45,10 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _navBar() {
+
+    double width = MediaQuery.of(context).size.width;
+    bool isMobile = width < 800;
+
     return Container(
       color: selectedPage == 1 ?  AppColors.about_bg_color :
       selectedPage == 2 ?  AppColors.batch_bg_color  :
