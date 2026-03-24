@@ -59,6 +59,16 @@ class BatchPage extends StatelessWidget {
                 ],
                 indicatorColor: Colors.red,
               ),
+
+              CourseCard(
+                title: "STANDARD COURSES",
+                courses: const [
+                  "Communication Essentials",
+                  "Personality Development",
+                  "Corporate English"
+                ],
+                indicatorColor: Colors.red,
+              ),
             ],
           ),
           const SizedBox(height: 70),

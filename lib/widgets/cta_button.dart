@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CTAButton extends StatefulWidget {
   const CTAButton({super.key});
@@ -16,6 +17,7 @@ class _CTAButtonState extends State<CTAButton> {
     return MouseRegion(
       onEnter: (_) => setState(() => hovering = true),
       onExit: (_) => setState(() => hovering = false),
+
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: 420,
@@ -24,36 +26,43 @@ class _CTAButtonState extends State<CTAButton> {
           color: hovering ? Colors.white : const Color(0xFFE7E7E7),
           borderRadius: BorderRadius.circular(40),
         ),
-        child: Row(
-          children: [
+        child: InkWell(
+          onTap: (){
+            GoRouter.of(context).go('/training_video');
 
-            const SizedBox(width: 25),
+          },
 
-            const Expanded(
-              child: Text(
-                "Watch this free 30-minute\ntraining to learn how",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
+          child: Row(
+            children: [
+
+              const SizedBox(width: 25),
+
+              const Expanded(
+                child: Text(
+                  "Watch this free 30-minute\ntraining to learn how",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
-            ),
 
-            Container(
-              margin: const EdgeInsets.all(8),
-              width: 60,
-              height: 60,
-              decoration: const BoxDecoration(
-                color: Color(0xFF57C7C2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 30,
-              ),
-            )
-          ],
+              Container(
+                margin: const EdgeInsets.all(8),
+                width: 60,
+                height: 60,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF57C7C2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

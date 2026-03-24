@@ -13,7 +13,7 @@ class HeroSection extends StatelessWidget {
 
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 100),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 100),
       child: isMobile
         ? _mobileLayout()
         : _desktopLayout(),/*Row(

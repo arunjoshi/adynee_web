@@ -1,72 +1,147 @@
+import 'package:adynee_web/model/APIResponse.dart';
+import 'package:adynee_web/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-class TrainingFormPage extends StatelessWidget {
+import '../providers/training_form_view_model.dart';
+import '../utils/DialogHelper.dart';
+import '../utils/prefrence_service.dart';
+import '../widgets/ad_button.dart';
+import '../widgets/ad_textfield.dart';
+
+
+class TrainingFormPage extends StatefulWidget {
   const TrainingFormPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<TrainingFormPage> createState() => _TrainingFormPageState();
+}
 
+class _TrainingFormPageState extends State<TrainingFormPage> {
+
+  final _formKey = GlobalKey<FormState>();
+
+  final nameController = TextEditingController();
+  final mobileController = TextEditingController();
+  final emailController = TextEditingController();
+  final animalController = TextEditingController();
+  final ageController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffe6e6e6),
-
       body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-
-              /// TITLE
-              Text(
-                "Enter your details to unlock\nFree 30-Minute Training",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xff59b6b2),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                /// TITLE
+                Text(
+                  "Enter your details to unlock\nFree 30-Minute Training",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xff59b6b2),
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 50),
+                const SizedBox(height: 50),
 
-              /// INPUT FIELDS
-              buildField("Full Name"),
-              const SizedBox(height: 20),
+                /// INPUT FIELDS
+                CustomTextField(hint: "Full Name", controller: nameController,
+                validator  : (value) => Validator.validateEmpty(value, "Name")),
+                const SizedBox(height: 20),
 
-              buildField("Mobile No."),
-              const SizedBox(height: 20),
+                CustomTextField(hint: "Mobile No.", controller: mobileController,
+                validator: Validator.validateMobile,
+                maxLength: 10,),
+                const SizedBox(height: 20),
 
-              buildField("Email ID"),
-              const SizedBox(height: 20),
+                CustomTextField(hint: "Email ID", controller:  emailController,
+                  validator: Validator.validateEmail),
+                const SizedBox(height: 20),
 
-              buildField("Favourite Animal"),
-              const SizedBox(height: 40),
+                CustomTextField(hint: "Age", controller:  animalController,),
+                const SizedBox(height: 40),
 
-              /// BUTTON
-              InkWell(
-                onTap: (){
-                  GoRouter.of(context).go('/show_video');
+                Consumer<TrainingFormViewModel>(
+                  builder: (context, vm, _) {
+                    return CustomButton(
+                      text: "Let's GO",
+                      width: 250,
+                      height: 50,
+                      isLoading: vm.isLoading,
+                      onTap: () async {
+                        if (!_formKey.currentState!.validate()) return;
 
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    "Let's GO",
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 16,
+                        ApiResponse response = await vm.submitForm(
+                          name: nameController.text,
+                          mobile: mobileController.text,
+                          email: emailController.text,
+                          age: animalController.text,
+                          animal: "",
+                        );
+
+                       /* bool success = await vm.submitForm(
+                          name: nameController.text,
+                          mobile: mobileController.text,
+                          email: emailController.text,
+                          animal: animalController.text,
+                        );*/
+
+                        if (response.status == "success") {
+
+                          DialogHelper.showAppDialog(context: context, isSuccess: true, title: "Sucess", message: "Your registration is scucessfull, please watch video",
+                          onOk: () async{
+                            if (response.data is Map<String, dynamic>) {
+                              String userId = response.data['user_id'];
+                              await PreferencesService.setUserId("${userId}");
+                              GoRouter.of(context).go('/show_video');
+                            }
+                          });
+
+
+                        }else{
+                          DialogHelper.showAppDialog(context: context, isSuccess: false, title: "error", message: response.message,);
+
+                          }
+                      },
+                    );
+
+                  }
+                ),
+
+                /// BUTTON
+               /* InkWell(
+                  onTap: (){
+                    GoRouter.of(context).go('/show_video');
+
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Text(
+                      "Let's GO",
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
+                ),*/
+              ],
+            ),
           ),
         ),
       ),

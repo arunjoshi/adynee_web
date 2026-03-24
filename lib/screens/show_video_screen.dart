@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+
+import '../widgets/ad_button.dart';
 
 class SurpriseVideoPage extends StatefulWidget {
   const SurpriseVideoPage({super.key});
@@ -74,7 +77,16 @@ class _SurpriseVideoPageState extends State<SurpriseVideoPage> {
             const SizedBox(height: 40),
 
             /// BUTTON
-            Container(
+            CustomButton(
+              onTap: (){
+                GoRouter.of(context).go('/book_assesment');
+              },
+              isLoading: false,
+              text: "Book Assesment",
+
+            ),
+
+           /* Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 40,
                 vertical: 14,
@@ -90,7 +102,7 @@ class _SurpriseVideoPageState extends State<SurpriseVideoPage> {
                   fontSize: 16,
                 ),
               ),
-            ),
+            ),*/
           ],
         ),
       ),
