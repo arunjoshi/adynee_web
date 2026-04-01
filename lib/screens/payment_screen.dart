@@ -10,6 +10,7 @@ import 'dart:js_util' as js_util;
 import 'dart:html' as html;
 
 import '../api/api_service.dart';
+import '../api/razor_pay_service.dart';
 import '../model/order_response.dart';
 import '../utils/DialogHelper.dart';
 import '../utils/prefrence_service.dart';
@@ -194,6 +195,35 @@ class _paymentScreenState extends State<PaymentScreen>  {
     }
   }
 
+
+  void openRazorpayCheckout(String? orderId, int amount, BuildContext context) {
+    final razorpay = RazorpayWebService();
+
+    razorpay.openCheckout(
+      key: "rzp_test_SVowINPm3oamjp",
+      amount: amount, // ₹500
+      orderId: orderId!,
+
+      onSuccess: (paymentId, orderId, signature) {
+        html.window.console.log("🎉 Payment Success");
+
+        verifyPayment(paymentId, orderId, signature, context);
+      },
+
+      onFailure: (message) {
+        html.window.console.log("⚠️ $message");
+
+        DialogHelper.showAppDialog(
+          context: context,
+          title: "Payment",
+          message: message,
+        );
+      },
+    );
+  }
+
+/*
+
   void openRazorpayCheckout(String? orderId, int amount, BuildContext context) {
     final options = js_util.jsify({
       "key": "rzp_test_SVowINPm3oamjp",
@@ -233,6 +263,7 @@ class _paymentScreenState extends State<PaymentScreen>  {
     });
     js_util.callMethod(html.window, 'openRazorpayCheckout', [options]);
   }
+*/
 
   // 🔐 Verify Payment with Backend
   Future<void> verifyPayment( String paymentId, String orderId, String sign, BuildContext buildContext) async {

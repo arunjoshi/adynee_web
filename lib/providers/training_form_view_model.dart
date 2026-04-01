@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
 import '../api/api_service.dart';
+import '../api/razor_pay_service.dart';
 import '../model/APIResponse.dart';
 import '../model/order_response.dart';
 import '../utils/DialogHelper.dart';
@@ -45,7 +46,7 @@ class TrainingFormViewModel extends ChangeNotifier {
         "isEnrolled": false,
         "occupation": ""
       };
-      print("sakmakldmalkdm - $sdfs");
+      html.window.console.log("sakmakldmalkdm - $sdfs");
 
 
       final apiResponse = await _apiService.submitUser(sdfs);
@@ -56,7 +57,7 @@ class TrainingFormViewModel extends ChangeNotifier {
 
       return apiResponse;
     } catch (e) {
-      print(e);
+      html.window.console.log(e);
       isLoading = false;
       notifyListeners();
       return ApiResponse(status: "failure", message: "Exception :- ${e.toString()}", data: {});
@@ -88,7 +89,7 @@ class TrainingFormViewModel extends ChangeNotifier {
         "isEnrolled": false,
         "occupation": ""
       };
-      print("sakmakldmalkdm - $sdfs");
+      html.window.console.log("sakmakldmalkdm - $sdfs");
 
 
       final apiResponse = await _apiService.submitUser(sdfs);
@@ -112,7 +113,7 @@ class TrainingFormViewModel extends ChangeNotifier {
 
       return apiResponse;
     } catch (e) {
-      print(e);
+      html.window.console.log(e);
       isLoading = false;
       notifyListeners();
       return ApiResponse(status: "failure", message: "Exception :- ${e.toString()}", data: {});
@@ -142,16 +143,19 @@ class TrainingFormViewModel extends ChangeNotifier {
         "created_at": DateTime.now().toString()
       };
 
-      print("sds ${json.encode(sds)}");
+      html.window.console.log("sds ${json.encode(sds)}");
 
       final apiResponse = await _apiService.createOrder(sds);
-      print("ORDER RESPONSE: ${apiResponse.data}");
+      html.window.console.log("ORDER RESPONSE: ${apiResponse.data}");
       //var data = apiResponse.data;
       OrderResponse order = OrderResponse.fromJson(apiResponse.data);
 
       if(apiResponse.status == "success"){
-        print("order.id :- ${order.id}");
+        html.window.console.log("order.id :- ${order.id}");
         openRazorpayCheckout(order.id, amount, buildContext);
+
+       // final razorpay = RazorpayWebService();
+
 
       }else{
         DialogHelper.hideLoader(buildContext);
@@ -165,55 +169,35 @@ class TrainingFormViewModel extends ChangeNotifier {
     }catch(ex, stack){
       DialogHelper.hideLoader(buildContext);
 
-      print("Exception :- ${ex} --  ${stack}");
+      html.window.console.log("Exception :- ${ex} --  ${stack}");
       DialogHelper.showAppDialog(context: buildContext, title: "Error", message: "${ex.toString()}", isSuccess: false);
     }
   }
 
   void openRazorpayCheckout(String? orderId, int amount, BuildContext context) {
-    final options = js_util.jsify({
-      "key": "rzp_test_SVowINPm3oamjp",
-      "amount": amount * 100,
-      "currency": "INR",
-      "name": "Adynee",
-      "description": "Test Payment",
-      "order_id": orderId,
-      "image": "https://dummyimage.com/100x100/000/fff.png&text=Adynee",
+    final razorpay = RazorpayWebService();
 
-      // ✅ SUCCESS CALLBACK
-      "handler": (response) async {
-        print("SUCCESS: $response");
-        final raw = js_util.dartify(response) ;
+    razorpay.openCheckout(
+      key: "rzp_test_SVowINPm3oamjp",
+      amount: amount, // ₹500
+      orderId: orderId!,
 
+      onSuccess: (paymentId, orderId, signature) {
+        html.window.console.log("🎉 Payment Success");
 
-        if (raw is Map) {
-          final res = Map<String, dynamic>.from(raw);
-
-          final paymentId = res['razorpay_payment_id']?.toString();
-          final orderId = res['razorpay_order_id']?.toString();
-          final signature = res['razorpay_signature']?.toString();
-
-          if (paymentId == null || orderId == null || signature == null) {
-            print("❌ Missing data");
-            return;
-          }
-          verifyPayment(paymentId, orderId, signature, context);
-        }
+        verifyPayment(paymentId, orderId, signature, context);
       },
-      // ❌ FAILURE CALLBACK
-      "modal": {
-        "ondismiss": () {
-          DialogHelper.showAppDialog(context: context, title: "Payment", message: "You had cancelled the payment");
-          print("Payment Cancelled ❌");
-        }
-      }
-    });
-    //js_util.callMethod(html.window, 'openRazorpayCheckout', [options]);
-    final razorpay = js_util.callConstructor(
-      js_util.getProperty(html.window, 'Razorpay'),
-      [options],
+
+      onFailure: (message) {
+        html.window.console.log("⚠️ $message");
+
+        DialogHelper.showAppDialog(
+          context: context,
+          title: "Payment",
+          message: message,
+        );
+      },
     );
-    js_util.callMethod(razorpay, 'open', []);
   }
 
   // 🔐 Verify Payment with Backend
@@ -255,7 +239,7 @@ class TrainingFormViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      html.window.console.log(e);
       return false;
     } finally {
       isLoading = false;
