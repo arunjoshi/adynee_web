@@ -13,6 +13,16 @@ class PreferencesService {
     await _prefs?.setString('user_id', userId);
   }
 
+  /// Save User ID
+  static Future setBool(String boolVar, bool value) async {
+    await _prefs?.setBool('boolVar', value);
+  }
+
+  /// Save User ID
+  static bool? getBool(String boolVar) {
+    return _prefs?.getBool(boolVar);
+  }
+
   /// Get User ID
   static String? getUserId() {
     return _prefs?.getString('user_id');

@@ -1,15 +1,29 @@
+import 'package:adynee_web/screens/main_page.dart';
 import 'package:adynee_web/widgets/ad_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:html' as html;
+
+import '../utils/prefrence_service.dart';
 
 class ConfirmationScreen extends StatefulWidget {
-  const ConfirmationScreen({super.key});
+  final bool isAssessment;
+  final String date;
+  final String time;
+  const ConfirmationScreen({super.key, required this.date, required this.time,required this.isAssessment,});
 
   @override
   State<ConfirmationScreen> createState() => _ConfirmationScreen();
 }
 
 class _ConfirmationScreen extends State<ConfirmationScreen> {
+
+  void disableBack() {
+    html.window.history.pushState(null, '', html.window.location.href);
+    html.window.onPopState.listen((event) {
+      html.window.history.pushState(null, '', html.window.location.href);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,29 +37,53 @@ class _ConfirmationScreen extends State<ConfirmationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-              /// Title
-              const Text(
-                "Congratulations, Booking Confirmed!!",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff5bb3b0),
-                ),
-              ),
+              widget.isAssessment ? Column(
+                children: [
+                  /// Title
+                  const Text(
+                    "Congratulations, Booking Confirmed!!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff5bb3b0),
+                    ),
+                  ),
 
-              const SizedBox(height: 10),
+                  const SizedBox(height: 10),
+                  Text(
+                    "You had booked the slot for ${widget.date} at ${widget.time} successfully",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  /// Subtitle
+                  const Text(
+                    "You will receive Joining Link 10 Minutes\nPrior to the Time of Assesment",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ):  Text(
+      "You had enrolled for the Course successfully \n You will get the batch details shortly on your email",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.w500,
+          color: Colors.black87,
+        ),
+      ),
 
-              /// Subtitle
-              const Text(
-                "You will receive Joining Link 10 Minutes\nPrior to the Time of Assesment",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
+
+
+
 
               const SizedBox(height: 40),
 
@@ -92,12 +130,17 @@ class _ConfirmationScreen extends State<ConfirmationScreen> {
               const SizedBox(height: 40),
 
               /// Bottom Button
-              CustomButton(text: "Return to Home Screen ",
+              CustomButton(text: "Explore our courses ",
                   isLoading: false,
                   onTap: (){
                     //GoRouter.of(context).go('/');
+                    PreferencesService.setBool('lockHome', true);
                     context.go('/');
-
+                    // GoRouter.of(context).go('/');
+/*                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => MainPage()),
+                          (route) => false,
+                    );*/
                   },
                height: 50,
               width: 250,)

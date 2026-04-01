@@ -9,7 +9,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     return Scaffold(
       backgroundColor: AppColors.home_bg_color,
       body: Column(
@@ -17,7 +16,6 @@ class HomePage extends StatelessWidget {
           Expanded(
             child: HeroSection(),
           ),
-
           Padding(
             padding: EdgeInsets.only(bottom: 30),
             child: Text(

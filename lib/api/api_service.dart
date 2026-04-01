@@ -35,9 +35,41 @@ class ApiService {
     );
 
     return apiResponse;
-    print(apiResponse.message);
-    print(apiResponse.data);
   }
+
+  Future<ApiResponse> getCourses() async {
+    final response = await _dio.get("/course");
+
+    final apiResponse = ApiResponse.fromJson(
+      response.data,
+          (data) => data, // simple map
+    );
+
+    return apiResponse;
+  }
+  Future<ApiResponse> createOrder( Map<String, dynamic> data) async {
+    final response = await _dio.post("/create-order", data: data);
+
+    final apiResponse = ApiResponse.fromJson(
+      response.data,
+          (data) => data, // simple map
+    );
+
+    return apiResponse;
+  }
+
+  Future<ApiResponse> verifyPayment( Map<String, dynamic> data) async {
+
+    final response = await _dio.post("/verify-payment",data: data);
+
+    final apiResponse = ApiResponse.fromJson(
+      response.data,
+          (data) => data, // simple map
+    );
+
+    return apiResponse;
+  }
+
 
 /*  Future<void> submitUser(Map<String, dynamic> data) async {
 

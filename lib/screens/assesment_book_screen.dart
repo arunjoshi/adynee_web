@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../utils/date_time_util.dart';
 import '../utils/prefrence_service.dart';
 import '../widgets/ad_button.dart';
 
@@ -17,7 +18,7 @@ class BookingScreen extends StatefulWidget {
 class _BookingScreenState extends State<BookingScreen> {
   String? selectedTime;
   String? userId;
-  DateTime? selectedDate;
+  String? convertedDate;
   @override
   void initState(){
     // TODO: implement initState
@@ -77,9 +78,9 @@ class _BookingScreenState extends State<BookingScreen> {
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    selectedDate == null
+                    convertedDate == null
                         ? "Select Date"
-                        : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                        : "${convertedDate}",
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
@@ -126,7 +127,10 @@ class _BookingScreenState extends State<BookingScreen> {
               /// Button
               CustomButton(
                 onTap: (){
-                  GoRouter.of(context).go('/payment');
+                  print(convertedDate.toString());
+                  print(selectedTime.toString());
+                  GoRouter.of(context).go('/payment', extra: {"assessment_date":"${convertedDate.toString()}",
+                    "assessment_time":"${selectedTime.toString()}"});
                 },
                 isLoading: false,
                 text: "Book Assesment",
@@ -172,9 +176,12 @@ class _BookingScreenState extends State<BookingScreen> {
       },
     );
 
+
+    print("convertedDate  :-  ${convertedDate}");
+
     if (picked != null) {
       setState(() {
-        selectedDate = picked;
+        convertedDate =  DateTimeUtil.dateToString(picked);
       });
     }
   }

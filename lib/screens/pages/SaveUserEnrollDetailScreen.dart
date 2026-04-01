@@ -5,21 +5,25 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/training_form_view_model.dart';
-import '../utils/DialogHelper.dart';
-import '../utils/prefrence_service.dart';
-import '../widgets/ad_button.dart';
-import '../widgets/ad_textfield.dart';
+import '../../model/course_model.dart';
+import '../../providers/training_form_view_model.dart';
+import '../../utils/DialogHelper.dart';
+import '../../utils/prefrence_service.dart';
+import '../../widgets/ad_button.dart';
+import '../../widgets/ad_textfield.dart';
 
 
-class TrainingFormPage extends StatefulWidget {
-  const TrainingFormPage({super.key});
+
+
+class SaveUserEnrollFormPage extends StatefulWidget {
+  final CourseModel course;
+  const SaveUserEnrollFormPage({required this.course, super.key});
 
   @override
-  State<TrainingFormPage> createState() => _TrainingFormPageState();
+  State<SaveUserEnrollFormPage> createState() => _SaveUserEnrollFormPageState();
 }
 
-class _TrainingFormPageState extends State<TrainingFormPage> {
+class _SaveUserEnrollFormPageState extends State<SaveUserEnrollFormPage> {
 
   final _formKey = GlobalKey<FormState>();
 
@@ -41,7 +45,7 @@ class _TrainingFormPageState extends State<TrainingFormPage> {
               children: [
                 /// TITLE
                 Text(
-                  "Enter your details to unlock\nFree 30-Minute Training",
+                  "Before Enrollment, Please provide some basic details",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontSize: 36,
@@ -54,70 +58,57 @@ class _TrainingFormPageState extends State<TrainingFormPage> {
 
                 /// INPUT FIELDS
                 CustomTextField(hint: "Full Name", controller: nameController,
-                validator  : (value) => Validator.validateEmpty(value, "Name")),
+                    validator  : (value) => Validator.validateEmpty(value, "Name")),
                 const SizedBox(height: 20),
 
                 CustomTextField(hint: "Mobile No.", controller: mobileController,
-                validator: Validator.validateMobile,
-                maxLength: 10,),
+                  validator: Validator.validateMobile,
+                  maxLength: 10,),
                 const SizedBox(height: 20),
 
                 CustomTextField(hint: "Email ID", controller:  emailController,
-                  validator: Validator.validateEmail),
+                    validator: Validator.validateEmail),
                 const SizedBox(height: 20),
 
                 CustomTextField(hint: "Favorite animal", controller:  animalController,),
                 const SizedBox(height: 40),
+                Text(
+                  "Rs. ${widget.course.price}/-",
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+
+                const SizedBox(height: 40),
 
                 Consumer<TrainingFormViewModel>(
-                  builder: (context, vm, _) {
-                    return CustomButton(
-                      text: "Let's GO",
-                      width: 250,
-                      height: 50,
-                      isLoading: vm.isLoading,
-                      onTap: () async {
-                        if (!_formKey.currentState!.validate()) return;
+                    builder: (context, vm, _) {
+                      return CustomButton(
+                        text: "Let's make payment",
+                        width: 250,
+                        height: 50,
+                        isLoading: vm.isLoading,
+                        onTap: () async {
+                          if (!_formKey.currentState!.validate()) return;
 
-                        ApiResponse response = await vm.submitForm(
-                          name: nameController.text,
-                          mobile: mobileController.text,
-                          email: emailController.text,
-                          age: "",
-                          animal: animalController.text,
-                        );
-
-                       /* bool success = await vm.submitForm(
-                          name: nameController.text,
-                          mobile: mobileController.text,
-                          email: emailController.text,
-                          animal: animalController.text,
-                        );*/
-
-                        if (response.status == "success") {
-
-                          DialogHelper.showAppDialog(context: context, isSuccess: true, title: "Sucess", message: "Your registration is scucessfull, please watch video",
-                          onOk: () async{
-                            if (response.data is Map<String, dynamic>) {
-                              String userId = response.data['user_id'];
-                              await PreferencesService.setUserId("${userId}");
-                              GoRouter.of(context).go('/show_video');
-                            }
-                          });
-
-
-                        }else{
-                          DialogHelper.showAppDialog(context: context, isSuccess: false, title: "error", message: response.message,);
-
-                          }
-                      },
-                    );
-
-                  }
+                          ApiResponse response = await vm.submitEnrollmentUserForm(
+                            name: nameController.text,
+                            mobile: mobileController.text,
+                            email: emailController.text,
+                            age: "",
+                            animal: animalController.text,
+                            context: context,
+                            course: widget.course
+                          );
+                        },
+                      );
+                    }
                 ),
 
                 /// BUTTON
-               /* InkWell(
+                /* InkWell(
                   onTap: (){
                     GoRouter.of(context).go('/show_video');
 

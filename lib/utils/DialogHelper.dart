@@ -40,4 +40,21 @@ class DialogHelper {
       },
     );
   }
+
+
+  static void showLoader(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // user can't close
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  static void hideLoader(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
 }

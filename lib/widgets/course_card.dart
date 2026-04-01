@@ -1,12 +1,14 @@
+import 'package:adynee_web/responsive/screen_size.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../model/course_model.dart';
 import 'course_button.dart';
 
 class CourseCard extends StatefulWidget {
 
   final String title;
-  final List<String> courses;
+  final List<CourseModel> courses;
   final Color indicatorColor;
   final String? highlight;
 
@@ -35,7 +37,7 @@ class _CourseCardState extends State<CourseCard> {
 
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        width: 280,
+        width: ScreenSize.width/5,
         padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 25),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
@@ -52,38 +54,46 @@ class _CourseCardState extends State<CourseCard> {
               : [],
         ),
 
-        child: Column(
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
 
-            Text(
-              widget.title,
-              style: GoogleFonts.poppins(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xff59b6b2),
+              Text(
+                widget.title,
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xff59b6b2),
+                ),
               ),
-            ),
 
-            const SizedBox(height: 25),
+              const SizedBox(height: 25),
 
-            ...widget.courses.map((course) => CourseButton(
-              title: course,
-              highlighted: widget.highlight == course,
-            )),
 
-            const SizedBox(height: 20),
 
-            Container(
-              height: 10,
-              width: 70,
-              decoration: BoxDecoration(
-                color: widget.indicatorColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            )
-          ],
+
+
+              ...widget.courses.map((course) => CourseButton(
+                courseModel: course,
+                highlighted: widget.highlight == course,
+              )),
+
+              const SizedBox(height: 20),
+
+              Container(
+                height: 10,
+                width: 70,
+                decoration: BoxDecoration(
+                  color: widget.indicatorColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
+
+
 }

@@ -1,11 +1,18 @@
+import 'package:adynee_web/model/course_model.dart';
+import 'package:adynee_web/providers/main_form_view_model.dart';
 import 'package:adynee_web/screens/pages/about_page.dart';
 import 'package:adynee_web/screens/pages/batch_page.dart';
 import 'package:adynee_web/screens/pages/home_page.dart';
+import 'package:adynee_web/utils/DialogHelper.dart';
 import 'package:adynee_web/utils/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../api/api_service.dart';
+import '../model/APIResponse.dart';
 import '../widgets/nav_item.dart';
+import 'dart:html' as html;
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,6 +24,30 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
 
   int selectedPage = 0;
+
+  void disableBack() {
+    html.window.history.pushState(null, '', html.window.location.href);
+    html.window.onPopState.listen((event) {
+      html.window.history.pushState(null, '', html.window.location.href);
+    });
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    disableBack();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final vm  =  Provider.of<MainFormViewModel>(context, listen: false);
+      if (!vm.isDataLoaded) {
+        vm.fetchCourses(context);
+      }
+
+          //.fetchCourses(context);
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +63,7 @@ class _MainPageState extends State<MainPage> {
           Expanded(
             child: IndexedStack(
               index: selectedPage,
-              children: const [
+              children: [
                 HomePage(),
                 AboutPage(),
                 BatchPage(),
@@ -101,4 +132,6 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
+
+
 }
