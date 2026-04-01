@@ -208,7 +208,12 @@ class TrainingFormViewModel extends ChangeNotifier {
         }
       }
     });
-    js_util.callMethod(html.window, 'openRazorpayCheckout', [options]);
+    //js_util.callMethod(html.window, 'openRazorpayCheckout', [options]);
+    final razorpay = js_util.callConstructor(
+      js_util.getProperty(html.window, 'Razorpay'),
+      [options],
+    );
+    js_util.callMethod(razorpay, 'open', []);
   }
 
   // 🔐 Verify Payment with Backend
