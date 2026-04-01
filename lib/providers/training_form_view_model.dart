@@ -151,7 +151,7 @@ class TrainingFormViewModel extends ChangeNotifier {
 
       if(apiResponse.status == "success"){
         print("order.id :- ${order.id}");
-        openRazorpayCheckout(order.id, 1, buildContext);
+        openRazorpayCheckout(order.id, amount, buildContext);
 
       }else{
         DialogHelper.hideLoader(buildContext);
