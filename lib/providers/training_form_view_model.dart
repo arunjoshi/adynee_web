@@ -145,7 +145,7 @@ class TrainingFormViewModel extends ChangeNotifier {
       print("sds ${json.encode(sds)}");
 
       final apiResponse = await _apiService.createOrder(sds);
-
+      print("ORDER RESPONSE: ${apiResponse.data}");
       //var data = apiResponse.data;
       OrderResponse order = OrderResponse.fromJson(apiResponse.data);
 
@@ -178,6 +178,7 @@ class TrainingFormViewModel extends ChangeNotifier {
       "name": "Adynee",
       "description": "Test Payment",
       "order_id": orderId,
+      "image": "https://dummyimage.com/100x100/000/fff.png&text=Adynee",
 
       // ✅ SUCCESS CALLBACK
       "handler": (response) async {

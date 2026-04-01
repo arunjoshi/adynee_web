@@ -168,6 +168,7 @@ class _paymentScreenState extends State<PaymentScreen>  {
       print("sds ${json.encode(sds)}");
 
       final apiResponse = await _apiService.createOrder(sds);
+      print("apiResponse.data ${apiResponse.data}");
 
       //var data = apiResponse.data;
       OrderResponse order = OrderResponse.fromJson(apiResponse.data);
